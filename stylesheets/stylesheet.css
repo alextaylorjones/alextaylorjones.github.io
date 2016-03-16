@@ -43,6 +43,11 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+.captions {
+  text-align: center;
+  font-size: 14px
+
+}
 
 /*******************************************************************************
 Theme Styles
