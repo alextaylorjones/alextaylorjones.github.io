@@ -47,7 +47,8 @@ In order to create a tool that successfully accomplishes our goal, we utilize co
 The foundational work which informed our approach came from [3]. In this paper, methods for building an informative, targeted subset of a body of information called a <i>metro map</i> are introduced. In the figure, colored lines represented different <i>research lines</i>, which captures a type of content-informed flow of articles through time. 
 <br>
 <figure>
-  <img src="images/metro-maps-fig.png" alt="from: Metro Maps of Science, Shahaf, Guestrin and Horvitz">
+  <img src="images/metro-maps-fig-1.png" alt="from: Metro Maps of Science, Shahaf, Guestrin and Horvitz">
+  <figcaption>Example of a Map Metro built over reinforcement learning literature </figcaption>
 </figure>
 Each research line represents a specific sequence of papers detailing the evolution of a sub topic. Our project uses this idea finding related research lines and explore using “intercitation” networks as a way of describing research paper evolution. More details on how this is achieved can be found in the methods section below.
 <br>
@@ -71,6 +72,7 @@ Due to the limitations on the number of objects that can be added onto the DOM, 
 
 <figure>
   <img src="images/full-preview.png" alt="from: Preview of 5000 samples of citation network">
+  <figcaption>Visualization of Stanford High Energy Physics Theory Citation Network (5000 samples) </figcaption>
 </figure>
 <br>
 Each “row” of nodes represents a year, with the bottom row representing the most recent  papers. The directed links represent a citation between the source and the sink node. Due to sparsification for visual performance, not all edges are visualized.
@@ -79,6 +81,7 @@ Below we have a visualization of an intercitation network. To restrict the paths
 <br>
 <figure>
   <img src="images/intercitation.png" alt="from: intercitation network">
+  <figcaption> Visualized intercitation network </figcaption>
 </figure>
 
 <h4>Textual description of nodes</h4>
@@ -103,6 +106,8 @@ For the same query and foundation nodes, using the network relevant relaxation w
 
 <figure>
   <img src="images/netrel.png" alt="from: network relevant intercitations">
+  <figcaption> Visualized intercitation network using network relevance relaxation</figcaption>
+
 </figure>
 
 As can be seen in the above area, specifically to the left region of the image we’ve discovered some uncited nodes which are related to our subject matter. A few of the titles:
@@ -116,10 +121,11 @@ As can be seen in the above area, specifically to the left region of the image w
 
 We’ve now provided a set of nodes which are related to our initial sets of papers but did not have explicit connections to both papers of interest. This demonstrates the ability for our tool to help explore and expand knowledge while also restricting the search space drastically.
 
-The ancestor descendant relaxation takes this idea further and finds all nodes that have a link or are linked to by nodes of our intercitation network. This relaxation allows users who understand the literature well to find obscure, non-foundational references that may never be found through a traditional search process. As a result, the returned visualization is quite large. We hope that by providing a color gradient based on coverage, some of these missed references may be found earlier than through traditional methods.
+The one-hop ancestor descendant relaxation takes this idea further and finds all nodes that have a link or are linked to by nodes of our intercitation network. This relaxation allows users who understand the literature well to find obscure, non-foundational references that may never be found through a traditional search process. As a result, the returned visualization is quite large. We hope that by providing a color gradient based on coverage, some of these missed references may be found earlier than through traditional methods.
 
 <figure>
-  <img src="images/ancdes.png" alt="from: network relevant intercitations">
+  <img src="images/ancdes.png" alt="from: ancestor descendant intercitations">
+  <figcaption>Visualized intercitation network using the one-hop ancestor descendant relaxation</figcaption>
 </figure>
 
 </p>
