@@ -112,10 +112,12 @@ For the same query and foundation nodes, using the network relevant relaxation w
 
 As can be seen in the above area, specifically to the left region of the image we’ve discovered some uncited nodes which are related to our subject matter. A few of the titles:
 
-Three-dimensional quantum geometry and black holes
-Thermodynamics of D-brane Probes
-D--branes and Spinning Black Holes
-Supersymmetric Domain-Wall World from D=5 Simple Gauged Supergravity
+<ul>
+<li>Three-dimensional quantum geometry and black holes</li>
+<li>Thermodynamics of D-brane Probes</li>
+<li>D--branes and Spinning Black Holes</li>
+<li>Supersymmetric Domain-Wall World from D=5 Simple Gauged Supergravity</li>
+</ul>
 
 We’ve now provided a set of nodes which are related to our initial sets of papers but did not have explicit connections to both papers of interest. This demonstrates the ability for our tool to help explore and expand knowledge while also restricting the search space drastically.
 
@@ -131,13 +133,19 @@ The one-hop ancestor descendant relaxation takes this idea further and finds all
 <h3>Implementation</h3>
 <p>
 We developed a web application using Python. Notable libraries used on the backend are Flask, NetworkX. Flask is a framework that can be used to quickly deploy web applications and provides a very natural interface to perform interactions with the backend. NetworkX is a very useful library for performing computation on graphs. The front end was written using a standard combination of html, css and javascript. The two main libraries used were jQuery and Cytoscape. Cytoscape is a visualization library written in javascript for easily visualizing graphs. Due to the heavy computational requirements for some algorithms, we made use of ajax for interaction during computation time. 
-<br>
+</p>
 
-Flask web server is started and data is preprocessed for fast computation and page requests
-User loads page and makes ajax calls 
+<p>We used the arxiv high energy physics phenomenology as our evaluation dataset. A basic flow of our code works as follows.
+
+<ol>
+<li>Flask web server is started and data is preprocessed for fast computation and page requests</li>
+<li>User loads page and makes ajax calls for data in visualization</li>
+<li>Visualization is rendered using a customized layout with Cytoscape</li>
+</ol>
 
 
 </p>
+
 <h3>Conclusions and future work
 </h3>
 <p>
@@ -154,8 +162,6 @@ We have provided three methods for generating informative citation subgraphs whi
       <h3>Data</h3>
         The source for our datset is the stanford high energy physics datset, available through the <a href="https://snap.stanford.edu/data/cit-HepPh.html">SNAP website</a>.
         <!-- input histogram of degrees-->
-      <h3>Future Work</h3>
-      
       <h3>Credits</h3>
       <p>
         Code for tf-idf borrowed from <a href=" http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/">stevenloria.com</a>
@@ -167,9 +173,11 @@ We have provided three methods for generating informative citation subgraphs whi
         Yi Ding
       </p>
       <h3>References</h3>
-[1] Connecting the Dots between News Articles. Dafna Shahf and Carlos Guestrin
-[2] Trains of Thought: Generating Informative Maps. Dafna Shahf, Carlos Guestrin, and Eric Horvitz
-[3] Metro Maps of Science. Dafna Shahf, Carlos Guestrin, and Eric Horvitz
+      <ol>
+        <li>Connecting the Dots between News Articles. Dafna Shahf and Carlos Guestrin</li>
+        <li>Trains of Thought: Generating Informative Maps. Dafna Shahf, Carlos Guestrin, and Eric Horvitz</li>
+        <li>Metro Maps of Science. Dafna Shahf, Carlos Guestrin, and Eric Horvitz</li>
+      </ol>
 
 
      <p>
