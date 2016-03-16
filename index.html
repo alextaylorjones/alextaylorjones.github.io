@@ -40,49 +40,64 @@
 <h3>Introduction</h3>
 <p>
 
-The primary goal of this project is to provide a content-aware search mechanism for parsing and reducing the information present in citation networks in the light of specific recent paper/relevant paper queries.  Current popular methods for searching for articles related to a specific topic follow two main threads: perform a query-list search, finding articles related in content; or follow references by trial and error, hoping to use article titles, authorship and publication venue to narrow the search space. As more experienced researchers have noted, this process is not satisfying and can lead to fruitless searches. Our project introduces a novel visualization tool that can help researchers understand a specific paper in light of a foundational or previously cited paper.
-<br>
+The primary goal of this project is to provide a content-aware search mechanism for parsing and reducing the information present in citation networks in the light of specific recent paper/relevant paper queries.  Current popular methods for searching for articles related to a specific topic follow two main threads: perform a query-list search, finding articles related in content; or follow references by trial and error, hoping to use article titles, authorship and publication venue to narrow the search space. As more experienced researchers have noted, this process is not satisfying and can lead to fruitless searches. Our project introduces a novel visualization tool that can help researchers understand a specific paper in light of a foundational or previously cited paper.</p>
+
+<p>
 In order to create a tool that successfully accomplishes our goal, we utilize concepts from [1,2,3], appreciating the simple formalization of a potentially nebulous subject. First, we structure our data to uncover successive articles which are connected through their shared concepts using the methods provided in [1]. In this work, the notion of <i>coherence</i> of a chain of longitudinal articles is introduced and utilized as a primitive to build many of the structures of interest in this project. The ideas presented in [2] give insights into useful approaches to create presentations of information which not only present several related threads of information, but encode the content relations through structural features. In particular, coherent chains of articles are presented as connected lines and intersected at common articles. 
-<br>
+</p>
+
+<p>
 The foundational work which informed our approach came from [3]. In this paper, methods for building an informative, targeted subset of a body of information called a <i>metro map</i> are introduced. In the figure, colored lines represented different <i>research lines</i>, which captures a type of content-informed flow of articles through time. 
-<br>
+</p>
+<p>
+
 <figure>
   <img src="images/metro-maps-fig-1.png" alt="from: Metro Maps of Science, Shahaf, Guestrin and Horvitz">
   <figcaption>Example of a Map Metro built over reinforcement learning literature </figcaption>
 </figure>
+</p>
+<p>
 Each research line represents a specific sequence of papers detailing the evolution of a sub topic. Our project uses this idea finding related research lines and explore using “intercitation” networks as a way of describing research paper evolution. More details on how this is achieved can be found in the methods section below.
-<br>
+
 </p>
 <h3>Methods</h3>
 <p>
 To understand our method, it useful to start from an imagined query and follow the response of our algorithm. As user input, both an older and younger node in a citation network are selected, which we call the foundation and the query, resp.. The rest of the algorithm proceeds to visualize and characterize the flow of information in the citation network, using the foundation as a starting point and the article as an ending point. We use the term <i>intercitation network</i> to denote any subgraph of the citation network for which all nodes are descendants of the foundation and ancestors of the query. These networks contain papers which give context to the query and draw ideas from the foundation. We utilize these structures as building blocks for our visualization and information map generation.
-<br>
+</p>
+<p>
 A naive approach to construct a useful intercitation network is to compute the largest intercitation network. This is tractable in theory, as computing the number of paths in a DAG can be achieved through a polynomial time algorithm [3]. In practice, it is slow to compute the maximal intercitation network, and the resulting network is often too large to be useful. We use a shortest path comparison metric to limit the number of paths (details can be found in implementation). However, it is reasonable to believe that articles important for understanding the query article may be absent from the intercitation network. Consequently, we relax the notion of intercitation network and allow the user to specify what method to use to include these potential missing links and their citation relations to the interciation network. Details on three proposed schemes are demonstrated in the results section.
-<br>
+</p>
+<p>
 To find content which links the foundation and query together, topic frequency-inverse document frequency (tf-idf) identifies words important to the foundation and query articles, but relatively uncommon across the corpus. We call this process concept extraction.
-<br>
+</p>
+<p>
 We proceed in the spirit of [3] by building a coherence graph, in which every path is a sufficiently coherent chains of articles in the intercitation network. Then, we use random walks with different starting points to sample paths in the graph, finding papers which are involved in many coherent chains. The relative number of visits to a node in the relaxed intercitation network, the analog of <i>coverage</i> of a paper with respect to a specific concept in [3], gives us a score for each article that we can use to inform the user on what articles in the intercitation network warrant further examination. 
-<br>
+</p>
+<p>
 Our sampling strategy uses the notion of influence [1,3] to specify the starting location of the random walk at nodes in the citation network in proportion to total influence of the foundation on that node. This allows us to sample coherent chains which start at papers which were influenced by the foundational work. Because influence in [1] can be directed from both cited papers and previous papers written by one of the authors, we can find highly covered papers which may have similar ideas to the foundation work, without explicit connections in the citation network.
 
 </p>
 <h3>Results</h3>
 <p>
 Due to the limitations on the number of objects that can be added onto the DOM, we can only visualize a subset of the entire hep-ph citation graph. For purposes of visualizing the efficacy of our solution this is enough. However we can create a more visually pleasing and performant application through the use of WebGL. 
-
+</p>
+<p>
 <figure>
   <img src="images/full-preview.png" alt="from: Preview of 5000 samples of citation network">
   <figcaption>Visualization of Stanford High Energy Physics Theory Citation Network (5000 samples) </figcaption>
 </figure>
-<br>
+</p>
+<p>
 Each “row” of nodes represents a year, with the bottom row representing the most recent  papers. The directed links represent a citation between the source and the sink node. Due to sparsification for visual performance, not all edges are visualized.
-<br>
+</p>
+<p>
 Below we have a visualization of an intercitation network. To restrict the paths between the starting nodes of the intercitation network (see methods for definition), we visualize path which has a length of less than 1.5x the shortest path between a starting node and the foundation or query node. The nodes with highest coverage (see methods) are the greenest, fading to black as coverage decreases.
 <br>
 <figure>
   <img src="images/intercitation.png" alt="from: intercitation network">
   <figcaption> Visualized intercitation network </figcaption>
 </figure>
+</p>
 
 <h4>Textual description of nodes</h4>
 <p>
@@ -99,30 +114,38 @@ Below we have a visualization of an intercitation network. To restrict the paths
 </ul>
 <p>
 Through visual inspection, it would seem that all of these papers are within a subfield of high energy physics and contribute to the understanding of individuals. 
-<br>
+</p>
+<p>
 The first relaxation of the intercitation network, called network relevant relaxation, expands the intercitation network to include a fixed percentage of nodes in the intercitation network which are cited or cite more nodes in the intercitation network than all other nodes. Intuitively, this helps users explore areas in they lack understanding, but are related to many of the papers of interest. This relaxation may also provide papers that may be ordinarily missed during a literature review.
-<br>
+</p>
+<p>
 For the same query and foundation nodes, using the network relevant relaxation we obtain the following visualization:
-
+</p>
+<p>
 <figure>
   <img src="images/netrel.png" alt="from: network relevant intercitations">
   <figcaption> Visualized intercitation network using network relevance relaxation</figcaption>
 
 </figure>
-
+</p>
+<p>
 As can be seen in the above area, specifically to the left region of the image we’ve discovered some uncited nodes which are related to our subject matter. A few of the titles:
-
+</p>
+<p>
 <ul>
 <li>Three-dimensional quantum geometry and black holes</li>
 <li>Thermodynamics of D-brane Probes</li>
 <li>D--branes and Spinning Black Holes</li>
 <li>Supersymmetric Domain-Wall World from D=5 Simple Gauged Supergravity</li>
 </ul>
-
+</p>
+<p>
 We’ve now provided a set of nodes which are related to our initial sets of papers but did not have explicit connections to both papers of interest. This demonstrates the ability for our tool to help explore and expand knowledge while also restricting the search space drastically.
-
+</p>
+<p>
 The one-hop ancestor descendant relaxation takes this idea further and finds all nodes that have a link or are linked to by nodes of our intercitation network. This relaxation allows users who understand the literature well to find obscure, non-foundational references that may never be found through a traditional search process. As a result, the returned visualization is quite large. We hope that by providing a color gradient based on coverage, some of these missed references may be found earlier than through traditional methods.
-
+</p>
+<p>
 <figure>
   <img src="images/ancdes.png" alt="from: ancestor descendant intercitations">
   <figcaption>Visualized intercitation network using the one-hop ancestor descendant relaxation</figcaption>
