@@ -18,193 +18,19 @@
     <header class="inner">
       <a id="forkme_banner" href="https://github.com/alextaylorjones">View on GitHub</a>
 
-      <h1 id="project_title">Visualizing Intercitation Networks</h1>
-      <h2 id="project_tagline"></h2>
-
     </header>
   </div>
 
   <!-- MAIN CONTENT -->
   <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-      <h3>Abstract</h3>
-      <p>
-        Trying to keep up with the speed of new scientific literature is challenging, even within a narrow field. 
-        Finding relevant and important references for learning and tracking the scientific progress that led up to a particular work is particularly challenging.
-        This network visualization project aims to expand the toolsets of researchers and students beyond that of query-list searching or scouring through references by hand.
-        To accomplish this goal, we present a visualization tool that can visualize the impactful and relevant works in citation network with respect to a specific paper and foundational reference.
-        We leverage recent work in expressive information presentation in order to focus the large search space.
-        We also provide three alternative search methods for a variety of desired expansiveness of the visualization, catering to varying depths of desire search outcomes.
-      </p>
+      
+      <h3>Publicationss</h3>
+      <a href="publications/the-network-bandit-problem.pdf"> The Network Bandit Problem </a>
 
-      <h3>Introduction</h3>
-      <p>
-        The primary goal of this project is to provide a content-aware search mechanism for parsing and reducing the information present in citation networks in the light of specific recent paper/relevant paper queries.  Current popular methods for searching for articles related to a specific topic follow two main threads: perform a query-list search, finding articles related in content; or follow references by trial and error, hoping to use article titles, authorship and publication venue to narrow the search space. As more experienced researchers have noted, this process is not satisfying and can lead to fruitless searches. Our project introduces a novel visualization tool that can help researchers understand a specific paper in light of a foundational or previously cited paper.</p>
-      </p>
-      <p>
-        In order to create a tool that successfully accomplishes our goal, we utilize concepts from [1,2,3], appreciating the simple formalization of a potentially nebulous subject. First, we structure our data to uncover successive articles which are connected through their shared concepts using the methods provided in [1]. In this work, the notion of <i>coherence</i> of a chain of longitudinal articles is introduced and utilized as a primitive to build many of the structures of interest in this project. The ideas presented in [2] give insights into useful approaches to create presentations of information which not only present several related threads of information, but encode the content relations through structural features. In particular, coherent chains of articles are presented as connected lines and intersected at common articles. 
-      </p>
-
-      <p>
-        The foundational work which informed our approach came from [3]. In this paper, methods for building an informative, targeted subset of a body of information called a <i>metro map</i> are introduced. In the figure, colored lines represented different <i>research lines</i>, which captures a type of content-informed flow of articles through time. 
-      </p>
-      <p>
-
-        <figure>
-          <img src="images/metro-map-fig-1.png" alt="from: Metro Maps of Science, Shahaf, Guestrin and Horvitz">
-          <div class="caption">Example of a Map Metro built over reinforcement learning literature </div>
-        </figure>
-      </p>
-      <p>
-        Each research line represents a specific sequence of papers detailing the evolution of a sub topic. Our project uses this idea finding related research lines and explore using “intercitation” networks as a way of describing research paper evolution. More details on how this is achieved can be found in the methods section below.
-
-      </p>
-      <h3>Methods</h3>
-      <p>
-        To understand our method, it useful to start from an imagined query and follow the response of our algorithm. As user input, both an older and younger node in a citation network are selected, which we call the foundation and the query, resp.. The rest of the algorithm proceeds to visualize and characterize the flow of information in the citation network, using the foundation as a starting point and the article as an ending point. We use the term <i>intercitation network</i> to denote any subgraph of the citation network for which all nodes are descendants of the foundation and ancestors of the query. These networks contain papers which give context to the query and draw ideas from the foundation. We utilize these structures as building blocks for our visualization and information map generation.
-      </p>
-      <p>
-        A naive approach to construct a useful intercitation network is to compute the largest intercitation network. This is tractable in theory, as computing the number of paths in a DAG can be achieved through a polynomial time algorithm [3]. In practice, it is slow to compute the maximal intercitation network, and the resulting network is often too large to be useful. We use a shortest path comparison metric to limit the number of paths (details can be found in implementation). However, it is reasonable to believe that articles important for understanding the query article may be absent from the intercitation network. Consequently, we relax the notion of intercitation network and allow the user to specify what method to use to include these potential missing links and their citation relations to the interciation network. Details on three proposed schemes are demonstrated in the results section.
-      </p>
-      <p>
-        To find content which links the foundation and query together, topic frequency-inverse document frequency (tf-idf) identifies words important to the foundation and query articles, but relatively uncommon across the corpus. We call this process concept extraction.
-      </p>
-      <p>
-        We proceed in the spirit of [3] by building a coherence graph, in which every path is a sufficiently coherent chains of articles in the intercitation network. Then, we use random walks with different starting points to sample paths in the graph, finding papers which are involved in many coherent chains. The relative number of visits to a node in the relaxed intercitation network, the analog of <i>coverage</i> of a paper with respect to a specific concept in [3], gives us a score for each article that we can use to inform the user on what articles in the intercitation network warrant further examination. 
-      </p>
-      <p>
-        Our sampling strategy uses the notion of influence [1,3] to specify the starting location of the random walk at nodes in the citation network in proportion to total influence of the foundation on that node. This allows us to sample coherent chains which start at papers which were influenced by the foundational work. Because influence in [1] can be directed from both cited papers and previous papers written by one of the authors, we can find highly covered papers which may have similar ideas to the foundation work, without explicit connections in the citation network.
-
-      </p>
-      <h3>Results</h3>
-      <p>
-        Due to the limitations on the number of objects that can be added onto the DOM, we can only visualize a subset of the entire hep-ph citation graph. For purposes of visualizing the efficacy of our solution this is enough. However we can create a more visually pleasing and performant application through the use of WebGL. 
-      </p>
-      <p>
-        <figure>
-          <img src="images/full-preview.png" alt="from: Preview of 5000 samples of citation network">
-          <div class="caption">Visualization of Stanford High Energy Physics Theory Citation Network (5000 samples) </div>
-        </figure>
-      </p>
-      <p>
-        Each “row” of nodes represents a year, with the bottom row representing the most recent  papers. The directed links represent a citation between the source and the sink node. Due to sparsification for visual performance, not all edges are visualized.
-      </p>
-      <p>
-        Below we have a visualization of an intercitation network. To restrict the paths between the starting nodes of the intercitation network (see methods for definition), we visualize path which has a length of less than 1.5x the shortest path between a starting node and the foundation or query node. The nodes with highest coverage (see methods) are the greenest, fading to black as coverage decreases.
-        <br>
-        <figure>
-          <img src="images/intercitation.png" alt="from: intercitation network">
-          <div class="caption"> Visualized intercitation network </div>
-        </figure>
-      </p>
-
-      <h4>Textual description of nodes</h4>
-      <p>
-        <ul>
-          <li>Source: Confining Strings</li>
-          <li>Destination: Non-Critical Confining Strings and the Renormalization Group </li>
-        </ul>
-        <ul>Intercitation Nodes
-          <li>The Holographic Bound in Anti-de Sitter Space </li>
-          <li>The Large N Limit of Superconformal Field Theories and Supergravity</li>
-          <li>Gauge Theory Correlators from Non-Critical String Theory </li>
-          <li>String Theory and Quark Confinement </li>
-          <li>Anti De Sitter Space And Holography </li>
-        </ul>
-      </p>
-      <p>
-        Through visual inspection, it would seem that all of these papers are within a subfield of high energy physics and contribute to the understanding of individuals. 
-      </p>
-      <p>
-        The first relaxation of the intercitation network, called network relevant relaxation, expands the intercitation network to include a fixed percentage of nodes in the intercitation network which are cited or cite more nodes in the intercitation network than all other nodes. Intuitively, this helps users explore areas in they lack understanding, but are related to many of the papers of interest. This relaxation may also provide papers that may be ordinarily missed during a literature review.
-      </p>
-      <p>
-        For the same query and foundation nodes, using the network relevant relaxation we obtain the following visualization:
-      </p>
-      <p>
-        <figure>
-          <img src="images/netrel.png" alt="from: network relevant intercitations">
-          <div class="caption"> Visualized intercitation network using network relevance relaxation</div>
-
-        </figure>
-      </p>
-      <p>
-        As can be seen in the above area, specifically to the left region of the image we’ve discovered some uncited nodes which are related to our subject matter. A few of the titles:
-      </p>
-      <p>
-        <ul>
-          <li>Three-dimensional quantum geometry and black holes</li>
-          <li>Thermodynamics of D-brane Probes</li>
-          <li>D--branes and Spinning Black Holes</li>
-          <li>Supersymmetric Domain-Wall World from D=5 Simple Gauged Supergravity</li>
-        </ul>
-      </p>
-      <p>
-        We’ve now provided a set of nodes which are related to our initial sets of papers but did not have explicit connections to both papers of interest. This demonstrates the ability for our tool to help explore and expand knowledge while also restricting the search space drastically.
-      </p>
-      <p>
-        The one-hop ancestor descendant relaxation takes this idea further and finds all nodes that have a link or are linked to by nodes of our intercitation network. This relaxation allows users who understand the literature well to find obscure, non-foundational references that may never be found through a traditional search process. As a result, the returned visualization is quite large. We hope that by providing a color gradient based on coverage, some of these missed references may be found earlier than through traditional methods.
-      </p>
-      <p>
-        <figure>
-          <img src="images/ancdes.png" alt="from: ancestor descendant intercitations">
-          <div class="caption">Visualized intercitation network using the one-hop ancestor descendant relaxation</div>
-        </figure>
-
-      </p>
-
-      <h3>Implementation</h3>
-      <p>
-        We developed a web application using Python. Notable libraries used on the backend are Flask, NetworkX. Flask is a framework that can be used to quickly deploy web applications and provides a very natural interface to perform interactions with the backend. NetworkX is a very useful library for performing computation on graphs. The front end was written using a standard combination of html, css and javascript. The two main libraries used were jQuery and Cytoscape. Cytoscape is a visualization library written in javascript for easily visualizing graphs. Due to the heavy computational requirements for some algorithms, we made use of ajax for interaction during computation time. 
-      </p>
-
-
-      <ol>
-        <li>Flask web server is started and data is preprocessed for fast computation and page requests</li>
-        <li>User loads page and makes ajax calls for data in visualization</li>
-        <li>Visualization is rendered using a customized layout with Cytoscape</li>
-      </ol>
-
-      <p>A copy of our source code can be obtained <a href="https://github.com/alextaylorjones/NS202-Visualization-Of-Metro-Maps">here</a>
-
-
-      </p>
-
-      <h3>Conclusions and future work
-      </h3>
-      <p>
-        We have provided three methods for generating informative citation subgraphs which inform users of relevant papers without exhaustive searching. Our project demonstrates that there potential for new visualization tools to help researchers explore and discover knowledge which be missed during traditional exploration. Due to time restrictions, we were unable to select a dataset that allowed us to make careful qualitative evaluations of our algorithms. As such, future work would involve constructing comparative user studies, evaluating the effectiveness of providing relevant or serendipitous paper recommendations versus traditional and other state of the art methods. Lastly, we hope to make a more refined version of our tool available for researchers and students.
-      </p>
-
-
-
-
-
-
-      <h3>Data</h3>
-      The source for our datset is the stanford high energy physics datset, available through the <a href="https://snap.stanford.edu/data/cit-HepPh.html">SNAP website</a>.
-      <!-- input histogram of degrees-->
-      <h3>Credits</h3>
-      <p>
-        Code for tf-idf borrowed from <a href=" http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/">stevenloria.com</a>
-      </p>
-      <h3>Contributors</h3>
-      <p>
-        Alex Jones
-        <br>
-        Yi Ding
-      </p>
-      <h3>References</h3>
-      <ol>
-        <li>Connecting the Dots between News Articles. Dafna Shahf and Carlos Guestrin</li>
-        <li>Trains of Thought: Generating Informative Maps. Dafna Shahf, Carlos Guestrin, and Eric Horvitz</li>
-        <li>Metro Maps of Science. Dafna Shahf, Carlos Guestrin, and Eric Horvitz</li>
-      </ol>
     </section>
-  </section>
-</div>
-
-<!-- FOOTER  -->
+  </div>
+     <!-- FOOTER  -->
 <div id="footer_wrap" class="outer">
   <footer class="inner">
     <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
